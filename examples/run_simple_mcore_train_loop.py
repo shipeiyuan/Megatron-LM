@@ -265,3 +265,8 @@ if __name__ == "__main__":
     )
     gpt_model.to(device)
     print("Successfully loaded the model")
+
+    # Cleanup: Destroy model parallel and process group to avoid resource leaks
+    parallel_state.destroy_model_parallel()
+    if torch.distributed.is_initialized():
+        torch.distributed.destroy_process_group()
