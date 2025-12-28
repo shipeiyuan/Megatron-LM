@@ -458,7 +458,20 @@ def set_jit_fusion_options():
         torch._C._jit_override_can_fuse_on_cpu(True)
         torch._C._jit_override_can_fuse_on_gpu(True)
 
-    _warmup_jit_function()
+    try:
+        _warmup_jit_function()
+    except Exception as e:
+        # Handle Triton compatibility issues or other compilation backend errors
+        # This catches ImportError, AttributeError, BackendCompilerFailed, etc.
+        import warnings
+        error_type = type(e).__name__
+        warnings.warn(
+            f"JIT warmup failed with {error_type}: {e}. "
+            "This is likely due to Triton version incompatibility with PyTorch. "
+            "Training will continue without JIT warmup, but performance may be affected. "
+            "To resolve: (1) Set TORCH_COMPILE_DISABLE=1, or (2) Update Triton: pip install --upgrade triton",
+            RuntimeWarning
+        )
 
 
 def _warmup_jit_function():
