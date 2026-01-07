@@ -1,12 +1,19 @@
 # Copyright (c) 2025, NVIDIA CORPORATION.  All rights reserved.
 
 import os
+import sys
 import torch
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Dict, Tuple, Iterator
+
+# Add Megatron-LM to path if not already there
+# This is needed when running examples without installing the package
+_MEGATRON_LM_ROOT = Path(__file__).parent.parent.absolute()
+if str(_MEGATRON_LM_ROOT) not in sys.path:
+    sys.path.insert(0, str(_MEGATRON_LM_ROOT))
 
 from megatron.core import parallel_state
 from megatron.core import dist_checkpointing
