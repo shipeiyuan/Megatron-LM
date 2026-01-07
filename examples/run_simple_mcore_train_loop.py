@@ -16,6 +16,7 @@ os.environ.setdefault('CUDA_DEVICE_MAX_CONNECTIONS', '1')
 # Suppress Python warnings
 warnings.filterwarnings('ignore', category=UserWarning)
 warnings.filterwarnings('ignore', category=FutureWarning)
+warnings.filterwarnings('ignore', module='modelopt')
 
 # Add Megatron-LM to path if not already there
 # This is needed when running examples without installing the package
