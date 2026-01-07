@@ -2,12 +2,20 @@
 
 import os
 import sys
+import warnings
 import torch
 from torch.optim import Adam
 from torch.utils.data import DataLoader
 from functools import partial
 from pathlib import Path
 from typing import Any, Callable, Dict, Tuple, Iterator
+
+# Set environment variables to suppress warnings
+os.environ.setdefault('CUDA_DEVICE_MAX_CONNECTIONS', '1')
+
+# Suppress Python warnings
+warnings.filterwarnings('ignore', category=UserWarning)
+warnings.filterwarnings('ignore', category=FutureWarning)
 
 # Add Megatron-LM to path if not already there
 # This is needed when running examples without installing the package
@@ -272,3 +280,8 @@ if __name__ == "__main__":
     )
     gpt_model.to(device)
     print("Successfully loaded the model")
+
+    # Cleanup distributed resources
+    parallel_state.destroy_model_parallel()
+    if torch.distributed.is_initialized():
+        torch.distributed.destroy_process_group()
